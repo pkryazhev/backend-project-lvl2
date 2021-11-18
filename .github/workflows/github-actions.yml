@@ -1,0 +1,35 @@
+name: Linter
+
+# Run this workflow every time a new commit pushed to your repository
+on: push
+
+jobs:
+  # Set the job key. The key is displayed as the job name
+  # when a job name is not provided
+  make-lint:
+    # Name the Job
+    name: Runs linter
+    # Set the type of machine to run on
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks out a copy of your repository on the ubuntu-latest machine
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # installing dependencies
+      - name: install dependencies
+        run: make install
+
+      # Runs the Linter action
+      - name: Run Linter
+        run: make lint
+
+      # Runs the jest tests
+      - name: Run test and publish code coverage
+        uses: paambaati/codeclimate-action@v2.4.0
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.TEST_REPORTER_ID }}
+        with:
+          coverageCommand: make test-coverage
+          debug: true
