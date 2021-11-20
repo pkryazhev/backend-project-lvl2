@@ -18,8 +18,7 @@ const compare = (filePath1, filePath2) => {
     if (!_.has(fileData2, key)) {
       acc.push(`- ${key}: ${fileData1[key]}`);
     } else if (fileData1[key] !== fileData2[key]) {
-      acc.push(`- ${key}: ${fileData1[key]}`);
-      acc.push(`+ ${key}: ${fileData2[key]}`);
+      acc.push(`- ${key}: ${fileData1[key]}\n + ${key}: ${fileData2[key]}`);
     } else {
       acc.push(`  ${key}: ${fileData1[key]}`);
     }
@@ -51,4 +50,4 @@ const genDiff = (filePath1, filePath2) => {
   return getPrintData(compareData);
 };
 
-export default genDiff;
+export { genDiff, compare, getPrintData };

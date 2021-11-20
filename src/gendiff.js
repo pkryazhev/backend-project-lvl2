@@ -1,5 +1,5 @@
 import { Command } from 'commander/esm.mjs';
-import genDiff from './compareFile.js';
+import { genDiff } from './compareFile.js';
 
 const run = () => {
   const program = new Command();
