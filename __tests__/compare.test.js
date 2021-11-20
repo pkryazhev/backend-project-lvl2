@@ -40,7 +40,6 @@ test('compare json files with absolute path test', () => {
   );
   // action
   const result = compare(filepath1, filepath2);
-  console.log(result);
   // assert
   checkAllParts(result);
 });
@@ -76,7 +75,6 @@ test('generate result output', () => {
   ];
   // action
   const result = getPrintData(compareData);
-  console.log(result);
   // assert
   expect(result).toEqual(printResult);
 });
