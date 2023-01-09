@@ -1,53 +1,38 @@
 import path from 'path';
-import { readFileSync } from 'fs';
+import fs from 'fs';
 import _ from 'lodash';
 import parseData from './parser.js';
+import generateOutput from './formatters/stylish.js';
 
 const getDataFromFile = (filePath) => {
-  const file = readFileSync(filePath, 'utf-8');
+  const file = fs.readFileSync(filePath, 'utf-8');
   return parseData(file, path.extname(filePath));
 };
 
-const compare = (filePath1, filePath2) => {
-  const fileData1 = getDataFromFile(filePath1);
-  const fileData2 = getDataFromFile(filePath2);
-  const keys1 = Object.keys(fileData1);
-  const keys2 = Object.keys(fileData2);
-
-  const checkFirstObject = (acc, key) => {
-    if (!_.has(fileData2, key)) {
-      acc.push(`- ${key}: ${fileData1[key]}`);
-    } else if (fileData1[key] !== fileData2[key]) {
-      acc.push(`- ${key}: ${fileData1[key]}\n + ${key}: ${fileData2[key]}`);
-    } else {
-      acc.push(`  ${key}: ${fileData1[key]}`);
+const compare = (data1, data2) => {
+  const keys = _.union(Object.keys(data1), Object.keys(data2)).sort();
+  const result = {};
+  keys.forEach((key) => {
+    if (!_.has(data1, key)) {
+      result[key] = 'only 2';
+    } else if (!_.has(data2, key)) {
+      result[key] = 'only 1';
+    } else if (data1[key] === data2[key]) {
+      result[key] = 'equal';
+    } else if (_.isObject(data1[key]) && _.isObject(data2[key])) {
+      result[key] = compare(data1[key], data2[key]);
+    } else if (data1[key] !== data2[key]) {
+      result[key] = 'not equal';
     }
-    return acc;
-  };
-
-  const checkSecondObject = (acc, key) => {
-    if (!_.has(fileData1, key)) {
-      acc.push(`+ ${key}: ${fileData2[key]}`);
-    }
-    return acc;
-  };
-
-  const firstFileResult = keys1.reduce(checkFirstObject, []);
-  return keys2.reduce(checkSecondObject, firstFileResult);
-};
-
-const getPrintData = (compareData) => {
-  let result = '{';
-  compareData.forEach((str, index) => {
-    result += `\n ${compareData[index]}`;
   });
-  result += '\n}';
   return result;
 };
 
 const genDiff = (filePath1, filePath2) => {
-  const compareData = compare(filePath1, filePath2);
-  return getPrintData(compareData);
+  const data1 = getDataFromFile(filePath1);
+  const data2 = getDataFromFile(filePath2);
+  const compareData = compare(data1, data2);
+  return generateOutput(data1, data2, compareData);
 };
 
-export { genDiff, compare, getPrintData };
+export { genDiff, compare, getDataFromFile };

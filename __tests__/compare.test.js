@@ -1,85 +1,53 @@
 import { test, expect } from '@jest/globals';
-import { fileURLToPath } from 'url';
-import path, { dirname } from 'path';
-import { genDiff, compare, getPrintData } from '../src/compareFile';
+import path from 'path';
+import { genDiff, getDataFromFile } from '../src/compareFile';
 
 const printResult = '{\n'
-  + '   host: hexlet.io\n'
-  + ' - timeout: 50\n'
-  + ' + timeout: 20\n'
-  + ' - proxy: 123.234.53.22\n'
-  + ' - follow: false\n'
-  + ' + verbose: true\n'
-  + '}';
+  + '    common: {\n'
+  + '      + follow: false\n'
+  + '        setting1: Value 1\n'
+  + '      - setting2: 200\n'
+  + '      - setting3: true\n'
+  + '      + setting3: null\n'
+  + '      + setting4: blah blah\n'
+  + '      + setting5: {\n'
+  + '            key5: value5\n'
+  + '        }\n'
+  + '        setting6: {\n'
+  + '            doge: {\n'
+  + '              - wow: \n'
+  + '              + wow: so much\n'
+  + '            }\n'
+  + '            key: value\n'
+  + '          + ops: vops\n'
+  + '        }\n'
+  + '    }\n'
+  + '    group1: {\n'
+  + '      - baz: bas\n'
+  + '      + baz: bars\n'
+  + '        foo: bar\n'
+  + '      - nest: {\n'
+  + '            key: value\n'
+  + '        }\n'
+  + '      + nest: str\n'
+  + '    }\n'
+  + '  - group2: {\n'
+  + '        abc: 12345\n'
+  + '        deep: {\n'
+  + '            id: 45\n'
+  + '        }\n'
+  + '    }\n'
+  + '  + group3: {\n'
+  + '        deep: {\n'
+  + '            id: {\n'
+  + '                number: 45\n'
+  + '            }\n'
+  + '        }\n'
+  + '        fee: 100500\n'
+  + '    }\n'
+  + '}\n';
 
-const timeoutPart = '- timeout: 50\n + timeout: 20';
-const hostPart = '  host: hexlet.io';
-const proxyPart = '- proxy: 123.234.53.22';
-const verbosePart = '+ verbose: true';
-const followPart = '- follow: false';
-
-const checkAllParts = (result) => {
-  expect(result.includes(timeoutPart)).toBeTruthy();
-  expect(result.includes(hostPart)).toBeTruthy();
-  expect(result.includes(proxyPart)).toBeTruthy();
-  expect(result.includes(verbosePart)).toBeTruthy();
-  expect(result.includes(followPart)).toBeTruthy();
-  expect(result.length).toEqual(5);
-};
-
-test('compare json files with absolute path test', () => {
-  // arrange
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = dirname(__filename);
-  const filepath1 = path.join(__dirname, '__fixtures__', 'example.json');
-  const filepath2 = path.join(
-    __dirname,
-    '__fixtures__',
-    'examples',
-    'example2.json',
-  );
-  // action
-  const result = compare(filepath1, filepath2);
-  // assert
-  checkAllParts(result);
-});
-
-test('compare yaml files with relative path test', () => {
-  // arrange
-  const filepath1 = path.join(
-    '__tests__',
-    '__fixtures__',
-    'examples',
-    'yamlExample1.yml',
-  );
-  const filepath2 = path.join(
-    '__tests__',
-    '__fixtures__',
-    'examples',
-    'yamlExample2.yaml',
-  );
-  // action
-  const result = compare(filepath1, filepath2);
-  // assert
-  checkAllParts(result);
-});
-
-test('generate result output', () => {
-  // arrange
-  const compareData = [
-    '  host: hexlet.io',
-    '- timeout: 50\n + timeout: 20',
-    '- proxy: 123.234.53.22',
-    '- follow: false',
-    '+ verbose: true',
-  ];
-  // action
-  const result = getPrintData(compareData);
-  // assert
-  expect(result).toEqual(printResult);
-});
-
-test('check genDiff', () => {
+test('check genDiff via yaml', () => {
   // arrange
   const filepath1 = path.join(
     '__tests__',
@@ -96,17 +64,31 @@ test('check genDiff', () => {
   // action
   const result = genDiff(filepath1, filepath2);
   // assert
-  expect(result.length).toEqual(110);
+  expect(result).toEqual(printResult);
 });
 
-test('incorrect type of file', () => {
+test('check genDiff via json', () => {
   // arrange
   const filepath1 = path.join(
     '__tests__',
     '__fixtures__',
     'examples',
-    'yamlExample1.yml',
+    'example1.json',
   );
+  const filepath2 = path.join(
+    '__tests__',
+    '__fixtures__',
+    'examples',
+    'example2.json',
+  );
+  // action
+  const result = genDiff(filepath1, filepath2);
+  // assert
+  expect(result).toEqual(printResult);
+});
+
+test('incorrect type of file', () => {
+  // arrange
   const filepath2 = path.join(
     '__tests__',
     '__fixtures__',
@@ -115,7 +97,7 @@ test('incorrect type of file', () => {
   );
   // action
   function triggerError() {
-    compare(filepath1, filepath2);
+    getDataFromFile(filepath2);
   }
   // assert
   expect(triggerError).toThrowError('Wrong file format');
