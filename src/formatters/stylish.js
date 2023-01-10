@@ -25,7 +25,7 @@ const printString = (key, value, symbol, count = 0) => {
   return result;
 };
 
-const generateOutput = (data1, data2, compareResults, counter = 0) => {
+const stylishGenerateOutput = (data1, data2, compareResults, counter = 0) => {
   const keys = Object.keys(compareResults);
   let result = '{\n';
   keys.forEach((key) => {
@@ -49,7 +49,7 @@ const generateOutput = (data1, data2, compareResults, counter = 0) => {
         break;
       }
       default: {
-        result += `${generateIndent(counter + 1)}${key}: ${generateOutput(data1[key], data2[key], compareResults[key], counter + 1)}`;
+        result += `${generateIndent(counter + 1)}${key}: ${stylishGenerateOutput(data1[key], data2[key], compareResults[key], counter + 1)}`;
         break;
       }
     }
@@ -58,4 +58,4 @@ const generateOutput = (data1, data2, compareResults, counter = 0) => {
   return result;
 };
 
-export default generateOutput;
+export default stylishGenerateOutput;

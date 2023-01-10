@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import _ from 'lodash';
 import parseData from './parser.js';
-import generateOutput from './formatters/stylish.js';
+import generateOutput from './formatters/index.js';
 
 const getDataFromFile = (filePath) => {
   const file = fs.readFileSync(filePath, 'utf-8');
@@ -28,11 +28,11 @@ const compare = (data1, data2) => {
   return result;
 };
 
-const genDiff = (filePath1, filePath2) => {
+const genDiff = (filePath1, filePath2, format) => {
   const data1 = getDataFromFile(filePath1);
   const data2 = getDataFromFile(filePath2);
   const compareData = compare(data1, data2);
-  return generateOutput(data1, data2, compareData);
+  return generateOutput(data1, data2, compareData, format);
 };
 
 export { genDiff, compare, getDataFromFile };
