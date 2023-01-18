@@ -2,13 +2,16 @@
   "name": "@hexlet/code",
   "type": "module",
   "bin": {
-    "gendiff": "bin/gendiff.js"
+    "gendiff": "dist/bin/gendiff.js"
   },
   "version": "1.0.0",
   "description": "[![Actions Status](https://github.com/pkryazhev/backend-project-lvl2/workflows/hexlet-check/badge.svg)](https://github.com/pkryazhev/backend-project-lvl2/actions)",
-  "main": "bin/gendiff.js",
+  "main": "index.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "npx jest --coverage"
+    "test": "npx jest --colors --runInBand --bail"
   },
   "repository": {
     "type": "git",
