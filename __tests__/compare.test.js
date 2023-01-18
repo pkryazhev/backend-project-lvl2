@@ -59,6 +59,8 @@ const plainPrintResult = "Property 'common.follow' was added with value: false\n
   + "Property 'group2' was removed\n"
   + "Property 'group3' was added with value: [complex value]\n";
 
+const jsonPrintResult = '{"common":{"follow":"only 2","setting1":"equal","setting2":"only 1","setting3":"not equal","setting4":"only 2","setting5":"only 2","setting6":{"doge":{"wow":"not equal"},"key":"equal","ops":"only 2"}},"group1":{"baz":"not equal","foo":"equal","nest":"not equal"},"group2":"only 1","group3":"only 2"}';
+
 test('check genDiff via yaml', () => {
   // arrange
   const filepath1 = path.join(
@@ -135,4 +137,24 @@ test('check genDiff with plain format', () => {
   const result = genDiff(filepath1, filepath2, 'plain');
   // assert
   expect(result).toEqual(plainPrintResult);
+});
+
+test('check genDiff with json format', () => {
+  // arrange
+  const filepath1 = path.join(
+    '__tests__',
+    '__fixtures__',
+    'examples',
+    'example1.json',
+  );
+  const filepath2 = path.join(
+    '__tests__',
+    '__fixtures__',
+    'examples',
+    'example2.json',
+  );
+  // action
+  const result = genDiff(filepath1, filepath2, 'json');
+  // assert
+  expect(result).toEqual(jsonPrintResult);
 });
