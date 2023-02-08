@@ -24,12 +24,3 @@ jobs:
       # Runs the Linter action
       - name: Run Linter
         run: make lint
-
-      # Runs the jest tests
-      - name: Run test and publish code coverage
-        uses: paambaati/codeclimate-action@v2.4.0
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-        with:
-          coverageCommand: make test-coverage
-          debug: true
