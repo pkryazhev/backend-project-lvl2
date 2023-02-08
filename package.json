@@ -1,5 +1,5 @@
 {
-  "name": "backend-project-lvl2",
+  "name": "@hexlet/code",
   "type": "module",
   "bin": {
     "gendiff": "dist/bin/gendiff.js"
