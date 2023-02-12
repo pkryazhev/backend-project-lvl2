@@ -7,7 +7,10 @@ const printValue = (value) => {
   if (_.isObject(value)) {
     return '[complex value]';
   }
-  return `${value}`;
+  if (Number.isInteger(value)) {
+    return `${value}`;
+  }
+  return `'${value}'`;
 };
 
 const printAddedString = (path, key, value) => `Property '${path}${key}' was added with value: ${printValue(value)}\n`;

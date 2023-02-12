@@ -79,10 +79,10 @@ const plainPrintResult = "Property 'common.follow' was added with value: false\n
   + "Property 'group2' was removed\n"
   + "Property 'group3' was added with value: [complex value]\n"
   + "Property 'group4.default' was updated. From null to ''\n"
-  + "Property 'group4.foo' was updated. From '0' to null\n"
+  + "Property 'group4.foo' was updated. From 0 to null\n"
   + "Property 'group4.isNested' was updated. From false to 'none'\n"
   + "Property 'group4.key' was added with value: false\n"
-  + "Property 'group4.nest.bar' was updated. From '' to '0'\n"
+  + "Property 'group4.nest.bar' was updated. From '' to 0\n"
   + "Property 'group4.nest.isNested' was removed\n"
   + "Property 'group4.someKey' was added with value: true\n"
   + "Property 'group4.type' was updated. From 'bas' to 'bar'";
