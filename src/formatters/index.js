@@ -7,6 +7,7 @@ export default function generateOutput(data1, data2, compareData, format) {
   switch (format) {
     case 'plain': {
       result = plainGenerateOutput(data1, data2, compareData);
+      result = result.slice(0, -1);
       break;
     }
     case 'json': {
@@ -15,6 +16,7 @@ export default function generateOutput(data1, data2, compareData, format) {
     }
     default: {
       result = stylishGenerateOutput(data1, data2, compareData);
+      result = result.slice(0, -1);
       break;
     }
   }

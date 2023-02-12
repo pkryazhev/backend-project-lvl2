@@ -3,6 +3,7 @@ common:
   follow: false
   setting1: Value 1
   setting3:
+    key: value
   setting4: blah blah
   setting5:
     key5: value5
@@ -20,3 +21,13 @@ group3:
     id:
       number: 45
   fee: 100500
+group4:
+  default: ''
+  foo:
+  isNested: none
+  key: false
+  nest:
+    bar: 0
+  someKey: true
+  type: bar
+language: js
