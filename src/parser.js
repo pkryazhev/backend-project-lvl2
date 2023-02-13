@@ -1,21 +1,17 @@
 import yaml from 'js-yaml';
 
 const parseData = (file, ext) => {
-  let data;
   switch (ext) {
     case '.json': {
-      data = JSON.parse(file);
-      break;
+      return JSON.parse(file);
     }
     case '.yml':
     case '.yaml': {
-      data = yaml.load(file);
-      break;
+      return yaml.load(file);
     }
     default:
       throw new Error('Wrong file format');
   }
-  return data;
 };
 
 export default parseData;

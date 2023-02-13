@@ -3,22 +3,15 @@ import stylishGenerateOutput from './stylish.js';
 import jsonGenerateOutput from './json.js';
 
 export default function generateOutput(data1, data2, compareData, format) {
-  let result;
   switch (format) {
     case 'plain': {
-      result = plainGenerateOutput(data1, data2, compareData);
-      result = result.slice(0, -1);
-      break;
+      return plainGenerateOutput(data1, data2, compareData).slice(0, -1);
     }
     case 'json': {
-      result = jsonGenerateOutput(data1, data2, compareData);
-      break;
+      return jsonGenerateOutput(data1, data2, compareData);
     }
     default: {
-      result = stylishGenerateOutput(data1, data2, compareData);
-      result = result.slice(0, -1);
-      break;
+      return stylishGenerateOutput(data1, data2, compareData).slice(0, -1);
     }
   }
-  return result;
 }

@@ -21,7 +21,7 @@ const printUpdatedString = (path, key, value1, value2) => `Property '${path}${ke
 
 const plainGenerateOutput = (object1, object2, testResult, path = '') => {
   const keys = Object.keys(testResult);
-  let result = '';
+  const result = [];
   keys.forEach((key) => {
     const value = testResult[key];
     switch (value) {
@@ -29,23 +29,23 @@ const plainGenerateOutput = (object1, object2, testResult, path = '') => {
         break;
       }
       case 'not equal': {
-        result += printUpdatedString(path, key, object1[key], object2[key]);
+        result.push(printUpdatedString(path, key, object1[key], object2[key]));
         break;
       }
       case 'only 1': {
-        result += printDeletedString(path, key);
+        result.push(printDeletedString(path, key));
         break;
       }
       case 'only 2': {
-        result += printAddedString(path, key, object2[key]);
+        result.push(printAddedString(path, key, object2[key]));
         break;
       }
       default: {
-        result += plainGenerateOutput(object1[key], object2[key], testResult[key], `${path}${key}.`);
+        result.push(plainGenerateOutput(object1[key], object2[key], testResult[key], `${path}${key}.`));
         break;
       }
     }
   });
-  return result;
+  return result.join('');
 };
 export default plainGenerateOutput;

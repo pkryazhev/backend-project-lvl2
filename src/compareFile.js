@@ -10,7 +10,9 @@ const getDataFromFile = (filePath) => {
 };
 
 const compare = (data1, data2) => {
-  const keys = _.union(Object.keys(data1), Object.keys(data2)).sort();
+  const keys1 = Object.keys(data1);
+  const keys2 = Object.keys(data2);
+  const keys = _.sortBy(_.union(keys1, keys2));
   const result = {};
   keys.forEach((key) => {
     if (!_.has(data1, key)) {
