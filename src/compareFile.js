@@ -54,7 +54,7 @@ const compare = (data1, data2) => {
   });
 };
 
-const genDiff = (filePath1, filePath2, format) => {
+const genDiff = (filePath1, filePath2, format = 'stylish') => {
   const data1 = getDataFromFile(filePath1);
   const data2 = getDataFromFile(filePath2);
   const compareData = compare(data1, data2);

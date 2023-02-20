@@ -5,5 +5,5 @@ export default (filePath1, filePath2, format = 'stylish') => {
   const data1 = getDataFromFile(filePath1);
   const data2 = getDataFromFile(filePath2);
   const compareData = compare(data1, data2);
-  return generateOutput(data1, data2, compareData, format);
+  return generateOutput(compareData, format);
 };
