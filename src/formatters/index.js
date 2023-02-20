@@ -2,16 +2,16 @@ import plainGenerateOutput from './plain.js';
 import stylishGenerateOutput from './stylish.js';
 import jsonGenerateOutput from './json.js';
 
-export default function generateOutput(data1, data2, compareData, format) {
+export default function generateOutput(compareData, format) {
   switch (format) {
     case 'plain': {
-      return plainGenerateOutput(data1, data2, compareData).slice(0, -1);
+      return plainGenerateOutput(compareData);
     }
     case 'json': {
-      return jsonGenerateOutput(data1, data2, compareData);
+      return jsonGenerateOutput(compareData);
     }
     default: {
-      return stylishGenerateOutput(data1, data2, compareData).slice(0, -1);
+      return stylishGenerateOutput(compareData);
     }
   }
 }

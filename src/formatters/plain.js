@@ -13,39 +13,35 @@ const printValue = (value) => {
   return `'${value}'`;
 };
 
-const printAddedString = (path, key, value) => `Property '${path}${key}' was added with value: ${printValue(value)}\n`;
+const printAddedString = (path, key, value) => `Property '${path}${key}' was added with value: ${printValue(value)}`;
 
-const printDeletedString = (path, key) => `Property '${path}${key}' was removed\n`;
+const printDeletedString = (path, key) => `Property '${path}${key}' was removed`;
 
-const printUpdatedString = (path, key, value1, value2) => `Property '${path}${key}' was updated. From ${printValue(value1)} to ${printValue(value2)}\n`;
+const printUpdatedString = (path, key, value1, value2) => `Property '${path}${key}' was updated. From ${printValue(value1)} to ${printValue(value2)}`;
 
-const plainGenerateOutput = (object1, object2, testResult, path = '') => {
-  const keys = Object.keys(testResult);
-  const result = [];
-  keys.forEach((key) => {
-    const value = testResult[key];
-    switch (value) {
-      case 'equal': {
-        break;
+const plainGenerateOutput = (compareData, path = '') => {
+  const result = compareData.filter((data) => data.status !== 'unchanged').map((data) => {
+    const {
+      status, key, value1, value2,
+    } = data;
+    switch (status) {
+      case 'removed': {
+        return printDeletedString(path, key);
       }
-      case 'not equal': {
-        result.push(printUpdatedString(path, key, object1[key], object2[key]));
-        break;
+      case 'added': {
+        return printAddedString(path, key, value2);
       }
-      case 'only 1': {
-        result.push(printDeletedString(path, key));
-        break;
+      case 'changed': {
+        return printUpdatedString(path, key, value1, value2);
       }
-      case 'only 2': {
-        result.push(printAddedString(path, key, object2[key]));
-        break;
+      case 'object': {
+        return plainGenerateOutput(data.children, `${path}${key}.`);
       }
       default: {
-        result.push(plainGenerateOutput(object1[key], object2[key], testResult[key], `${path}${key}.`));
-        break;
+        throw new Error('wrong status!');
       }
     }
   });
-  return result.join('');
+  return result.join('\n');
 };
 export default plainGenerateOutput;

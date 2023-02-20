@@ -13,28 +13,52 @@ const compare = (data1, data2) => {
   const keys1 = Object.keys(data1);
   const keys2 = Object.keys(data2);
   const keys = _.sortBy(_.union(keys1, keys2));
-  const result = {};
-  keys.forEach((key) => {
-    if (!_.has(data1, key)) {
-      result[key] = 'only 2';
-    } else if (!_.has(data2, key)) {
-      result[key] = 'only 1';
-    } else if (data1[key] === data2[key]) {
-      result[key] = 'equal';
-    } else if (_.isObject(data1[key]) && _.isObject(data2[key])) {
-      result[key] = compare(data1[key], data2[key]);
-    } else if (data1[key] !== data2[key]) {
-      result[key] = 'not equal';
+  return keys.map((key) => {
+    const value1 = data1[key];
+    const value2 = data2[key];
+    if (!_.has(data2, key)) {
+      return {
+        key,
+        status: 'removed',
+        value1,
+      };
     }
+    if (_.has(data2, key) && !_.has(data1, key)) {
+      return {
+        key,
+        status: 'added',
+        value2,
+      };
+    }
+    if (value1 === value2) {
+      return {
+        key,
+        status: 'unchanged',
+        value1,
+        value2,
+      };
+    }
+    if (_.isObject(value1) && _.isObject(value2)) {
+      return {
+        key,
+        status: 'object',
+        children: compare(value1, value2),
+      };
+    }
+    return {
+      key,
+      status: 'changed',
+      value1,
+      value2,
+    };
   });
-  return result;
 };
 
 const genDiff = (filePath1, filePath2, format) => {
   const data1 = getDataFromFile(filePath1);
   const data2 = getDataFromFile(filePath2);
   const compareData = compare(data1, data2);
-  return generateOutput(data1, data2, compareData, format);
+  return generateOutput(compareData, format);
 };
 
 export { genDiff, compare, getDataFromFile };

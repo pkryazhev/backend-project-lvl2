@@ -87,7 +87,7 @@ const plainPrintResult = "Property 'common.follow' was added with value: false\n
   + "Property 'group4.someKey' was added with value: true\n"
   + "Property 'group4.type' was updated. From 'bas' to 'bar'";
 
-const jsonPrintResult = '{"common":{"follow":"only 2","setting1":"equal","setting2":"only 1","setting3":"not equal","setting4":"only 2","setting5":"only 2","setting6":{"doge":{"wow":"not equal"},"key":"equal","ops":"only 2"}},"group1":{"baz":"not equal","foo":"equal","nest":"not equal"},"group2":"only 1","group3":"only 2","group4":{"default":"not equal","foo":"not equal","isNested":"not equal","key":"only 2","nest":{"bar":"not equal","isNested":"only 1"},"someKey":"only 2","type":"not equal"},"language":"equal"}';
+const jsonPrintResult = '[{"key":"common","status":"object","children":[{"key":"follow","status":"added","value2":false},{"key":"setting1","status":"unchanged","value1":"Value 1","value2":"Value 1"},{"key":"setting2","status":"removed","value1":200},{"key":"setting3","status":"changed","value1":true,"value2":{"key":"value"}},{"key":"setting4","status":"added","value2":"blah blah"},{"key":"setting5","status":"added","value2":{"key5":"value5"}},{"key":"setting6","status":"object","children":[{"key":"doge","status":"object","children":[{"key":"wow","status":"changed","value1":"too much","value2":"so much"}]},{"key":"key","status":"unchanged","value1":"value","value2":"value"},{"key":"ops","status":"added","value2":"vops"}]}]},{"key":"group1","status":"object","children":[{"key":"baz","status":"changed","value1":"bas","value2":"bars"},{"key":"foo","status":"unchanged","value1":"bar","value2":"bar"},{"key":"nest","status":"changed","value1":{"key":"value"},"value2":"str"}]},{"key":"group2","status":"removed","value1":{"abc":12345,"deep":{"id":45}}},{"key":"group3","status":"added","value2":{"deep":{"id":{"number":45}},"fee":100500}},{"key":"group4","status":"object","children":[{"key":"default","status":"changed","value1":null,"value2":""},{"key":"foo","status":"changed","value1":0,"value2":null},{"key":"isNested","status":"changed","value1":false,"value2":"none"},{"key":"key","status":"added","value2":false},{"key":"nest","status":"object","children":[{"key":"bar","status":"changed","value1":"","value2":0},{"key":"isNested","status":"removed","value1":true}]},{"key":"someKey","status":"added","value2":true},{"key":"type","status":"changed","value1":"bas","value2":"bar"}]},{"key":"language","status":"unchanged","value1":"js","value2":"js"}]';
 
 test('check genDiff via yaml', () => {
   // arrange
@@ -184,5 +184,6 @@ test('check genDiff with json format', () => {
   // action
   const result = genDiff(filepath1, filepath2, 'json');
   // assert
+  console.log(result);
   expect(result).toEqual(jsonPrintResult);
 });

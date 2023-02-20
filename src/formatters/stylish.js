@@ -2,55 +2,63 @@ import _ from 'lodash';
 
 const generateIndent = (quantity) => _.repeat('    ', quantity);
 
-const printString = (key, value, symbol, count = 0) => {
+const printValue = (key, value, sign, count = 1) => {
   if (!_.isObject(value)) {
-    return `${generateIndent(count)}  ${symbol} ${key}: ${value}\n`;
+    return `${generateIndent(count)}  ${sign} ${key}: ${value}`;
   }
-  const result = [];
-  result.push(`${generateIndent(count)}  ${symbol} ${key}: {\n`);
   const keys = Object.keys(value);
-  keys.forEach((k) => {
-    if (_.isObject(value[k])) {
-      result.push(printString(k, value[k], ' ', count + 1));
-    } else {
-      result.push(`${generateIndent(count + 1)}    ${k}: ${value[k]}\n`);
-    }
-  });
-  result.push(`${generateIndent(count + 1)}}\n`);
-  return result.join('');
+  const result = keys.map((k) => printValue(k, value[k], ' ', count + 1));
+  return `${generateIndent(count)}  ${sign} ${key}: {\n${result.join('\n')}\n${generateIndent(count + 1)}}`;
 };
 
-const stylishGenerateOutput = (data1, data2, compareResults, counter = 0) => {
-  const keys = Object.keys(compareResults);
-  const result = ['{\n'];
-  keys.forEach((key) => {
-    const value = compareResults[key];
-    switch (value) {
-      case 'equal': {
-        result.push(printString(key, data1[key], ' ', counter));
-        break;
+const printString = (data, counter = 1) => {
+  const {
+    key, status, value1, value2,
+  } = data;
+  switch (status) {
+    case 'unchanged': {
+      return `${printValue(key, value1, ' ', counter)}`;
+    }
+    case 'removed': {
+      return `${printValue(key, value1, '-', counter)}`;
+    }
+    case 'added': {
+      return `${printValue(key, value2, '+', counter)}`;
+    }
+    case 'changed': {
+      return `${printValue(key, value1, '-', counter)}\n${printValue(key, value2, '+', counter)}`;
+    }
+    default: {
+      throw new Error();
+    }
+  }
+};
+
+const stylishGenerateOutput = (compareData, counter = 0) => {
+  const result = compareData.map((data) => {
+    const { status, key, children } = data;
+    switch (status) {
+      case 'unchanged': {
+        return printString(data, counter);
       }
-      case 'only 1': {
-        result.push(printString(key, data1[key], '-', counter));
-        break;
+      case 'removed': {
+        return printString(data, counter);
       }
-      case 'only 2': {
-        result.push(printString(key, data2[key], '+', counter));
-        break;
+      case 'added': {
+        return printString(data, counter);
       }
-      case 'not equal': {
-        result.push(printString(key, data1[key], '-', counter));
-        result.push(printString(key, data2[key], '+', counter));
-        break;
+      case 'changed': {
+        return `${printString(data, counter)}`;
+      }
+      case 'object': {
+        return `${generateIndent(counter + 1)}${key}: ${stylishGenerateOutput(children, counter + 1)}`;
       }
       default: {
-        result.push(`${generateIndent(counter + 1)}${key}: ${stylishGenerateOutput(data1[key], data2[key], compareResults[key], counter + 1)}`);
-        break;
+        throw new Error();
       }
     }
   });
-  result.push(`${generateIndent(counter)}}\n`);
-  return result.join('');
+  return `{\n${result.join('\n')}\n${generateIndent(counter)}}`;
 };
 
 export default stylishGenerateOutput;
